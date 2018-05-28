@@ -1,0 +1,12 @@
+./launch "( audiotestsrc ! vorbisenc quality=0.5 ! rtpvorbispay name=pay0 pt=97 )"  
+
+
+SERVER:
+
+./launch "( filesrc location=music.ogg ! oggdemux ! queue ! rtpvorbispay name=pay0 pt=96 )"
+
+
+CLIENT:
+
+gst-launch-1.0 rtspsrc location="rtsp://127.0.0.1:8554/test" ! rtpvorbisdepay ! decodebin ! autoaudiosink
+
