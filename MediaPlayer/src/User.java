@@ -38,6 +38,18 @@ public class User {
 		}
 		current_rtsp = rtsp_list.get(current_rtsp_index);
 		
+		change_rtsp(emp);
+	}
+	
+	public void go_to_index_rtsp(EmbeddedMediaPlayer emp,int index) {
+		if(index >= 0 && index < rtsp_list.size()) {
+			current_rtsp_index = index;
+			current_rtsp = rtsp_list.get(current_rtsp_index);
+			change_rtsp(emp);
+		}
+	}
+	
+	private void change_rtsp(EmbeddedMediaPlayer emp) {
 		emp.stop();
 		emp.prepareMedia(current_rtsp);
 		emp.play();
