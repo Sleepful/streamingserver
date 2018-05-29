@@ -32,8 +32,9 @@ public class Main {
 	static int screenHeight;
 	
 	static JFrame video_frame;
-	static JFrame playlist_frame;
-	static JFrame control_frame;
+	static JFrame songs_frame;
+	static JFrame controls_frame;
+	static JFrame playlists_frame;
 	
 	public static void main(String[] args){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -42,12 +43,22 @@ public class Main {
 		
 		create_user();
 		create_video_frame();
-		create_control_frame();
-		create_playlist_frame();
+		create_controls_frame();
+		create_songs_frame();
+		create_playlists_frame();
 	}
 	
 	private static void create_user() {
 		user = new User();
+		
+		user.add_playlist("Rock");
+		user.add_playlist("Pop");
+		user.add_playlist("Jazz");
+		user.add_playlist("Disco");
+		user.add_playlist("Rap");
+		user.add_playlist("VGM");
+		
+		//ESTOS LOS TIENE QUE PEDIR AL SERVIDOR DEPENDIENDO DEL CURRENT_PLAYLIST
 		user.add_rtsp("rtsp://184.72.239.149/vod/mp4:BigBuckBunny_175k.mov");
 		user.add_rtsp("rtsp://184.72.239.149/vod/mp4:BigBuckBunny_175k.mov");
 		user.add_rtsp("rtsp://184.72.239.149/vod/mp4:BigBuckBunny_175k.mov");
@@ -60,43 +71,64 @@ public class Main {
 		user.add_rtsp("rtsp://184.72.239.149/vod/mp4:BigBuckBunny_175k.mov");
 	}
 	
-	private static void create_control_frame() {
-		control_frame = new JFrame();
-		control_frame.setLocation((screenWidth/2)-(screenWidth/4)-(screenWidth/8),(screenHeight/2)-(screenHeight/4));
-		control_frame.setSize((screenWidth/8),(screenHeight/2));
-		control_frame.setVisible(true);
+	private static void create_playlists_frame() {
+		playlists_frame = new JFrame();
+		playlists_frame.setLocation((screenWidth/2)-(screenWidth/4),(screenHeight/2)-(screenHeight/4)-(screenHeight/8));
+		playlists_frame.setSize((screenWidth/2),(screenHeight/8));
+		playlists_frame.setVisible(true);
 		
-		JPanel control_panel = new JPanel(new GridLayout(4,1));
-		control_panel.setLocation(control_frame.getX(),control_frame.getY());
+		JPanel playlists_panel = new JPanel(new GridLayout(1,1+(user.playlists_list.size())));
+		playlists_panel.setLocation(playlists_frame.getX(),playlists_frame.getY());
+		
+		JLabel tab_label = new JLabel("Tab:",JLabel.CENTER);
+		playlists_panel.add(tab_label);
+		
+		for(int i=0;i<user.playlists_list.size();i++) {
+			String temp_playlist = user.playlists_list.get(i);
+			JLabel new_label = new JLabel(temp_playlist,JLabel.CENTER);
+			playlists_panel.add(new_label);
+		}
+		
+		playlists_frame.add(playlists_panel);
+	}
+	
+	private static void create_controls_frame() {
+		controls_frame = new JFrame();
+		controls_frame.setLocation((screenWidth/2)-(screenWidth/4)-(screenWidth/8),(screenHeight/2)-(screenHeight/4));
+		controls_frame.setSize((screenWidth/8),(screenHeight/2));
+		controls_frame.setVisible(true);
+		
+		JPanel controls_panel = new JPanel(new GridLayout(4,1));
+		controls_panel.setLocation(controls_frame.getX(),controls_frame.getY());
 		
 		JLabel pause_label = new JLabel("P: Pause",JLabel.CENTER);
-		control_panel.add(pause_label);
+		controls_panel.add(pause_label);
 		JLabel shuffle_label = new JLabel("S: Shuffle",JLabel.CENTER);
-		control_panel.add(shuffle_label);
+		controls_panel.add(shuffle_label);
 		JLabel next_label = new JLabel("N: Next",JLabel.CENTER);
-		control_panel.add(next_label);
+		controls_panel.add(next_label);
 		JLabel restart_label = new JLabel("R: Restart",JLabel.CENTER);
-		control_panel.add(restart_label);
+		controls_panel.add(restart_label);
 		
-		control_frame.add(control_panel);
+		controls_frame.add(controls_panel);
 	}
 	
-	private static void create_playlist_frame() {
-		playlist_frame = new JFrame();
-		playlist_frame.setLocation((screenWidth/2)+(screenWidth/4),(screenHeight/2)-(screenHeight/4));
-		playlist_frame.setSize((screenWidth/8),(screenHeight/2));
-		playlist_frame.setVisible(true);
+	private static void create_songs_frame() {
+		songs_frame = new JFrame();
+		songs_frame.setLocation((screenWidth/2)+(screenWidth/4),(screenHeight/2)-(screenHeight/4));
+		songs_frame.setSize((screenWidth/8),(screenHeight/2));
+		songs_frame.setVisible(true);
 		
-		JPanel playlist_panel = new JPanel(new GridLayout(user.rtsp_list.size(),1));
-		playlist_panel.setLocation(playlist_frame.getX(),playlist_frame.getY());
+		JPanel songs_panel = new JPanel(new GridLayout(user.rtsp_list.size(),1));
+		songs_panel.setLocation(songs_frame.getX(),songs_frame.getY());
 		
 		for(int i=0;i<user.rtsp_list.size();i++) {
 			//String temp_rtsp = user.rtsp_list.get(i);
 			JLabel new_label = new JLabel(i+": Song name",JLabel.CENTER);
-			playlist_panel.add(new_label);
+			songs_panel.add(new_label);
 		}
 		
-		playlist_frame.add(playlist_panel);
+		songs_frame.add(songs_panel);
 	}
 	
 	private static void create_video_frame(){
@@ -141,8 +173,11 @@ public class Main {
 		//Add Key Listener
 		KeyListener key_listener = new KeyListener(emp,user);
 		video_frame.addKeyListener(key_listener);
+		video_frame.setFocusTraversalKeysEnabled(false);
 		c.addKeyListener(key_listener);
+		c.setFocusTraversalKeysEnabled(false);
 		p.addKeyListener(key_listener);
+		p.setFocusTraversalKeysEnabled(false);
 		
 		emp.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 		    @Override
@@ -212,5 +247,9 @@ class KeyListener extends KeyAdapter {
 		if (evt.getKeyChar() == '9'){
 			user.go_to_index_rtsp(emp, 9);
 		}
+		
+	    if (evt.getKeyCode() == KeyEvent.VK_TAB) {
+	        user.go_to_next_playlist();
+	    }
 	}
 }
