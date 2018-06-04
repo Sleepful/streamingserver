@@ -168,7 +168,7 @@ main (int argc, char *argv[])
         factory);
     g_free (str);
 
-    char url[1024];
+    char url[URL_SIZE];
 
     RemoveSpaces(argv[arg]);
     snprintf(url, sizeof(url), "/%s", argv[arg]);

@@ -10,3 +10,6 @@ CLIENT:
 
 gst-launch-1.0 rtspsrc location="rtsp://127.0.0.1:8554/test" ! rtpvorbisdepay ! decodebin ! autoaudiosink
 
+
+
+find video -type f -print0 | xargs -0 ./mp4

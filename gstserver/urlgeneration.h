@@ -3,6 +3,7 @@
 
 #define IP_EXAMPLE "rtsp://127.0.0.1:"
 #define DEFAULT_RTSP_PORT "8554"
+#define URL_SIZE 1024
 
 
 void RemoveSpaces(char* source)
