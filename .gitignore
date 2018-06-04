@@ -1,4 +1,5 @@
 gstserver/music/*
+gstserver/*.log
 
 # Prerequisites
 *.d

@@ -8,7 +8,7 @@ all: mp4 server client #launch ogg
 re: clean all
 
 server:
-	$(CC) $(CFLAGS) $(ZMQLIB) main-server.c -o server
+	$(CC) $(CFLAGS) $(ZMQLIB) server.c -o server
 
 mp4:
 	$(CC) $(CFLAGS) $(GSTRLIB) mp4-streaming.c -o mp4
@@ -24,4 +24,4 @@ client:
 
 
 clean:
-	rm mp4 server #launch ogg
+	rm mp4 server client #launch ogg

@@ -8,6 +8,7 @@
 #include "zhelpers.h"
 #include "urlgeneration.h"
 
+struct comType *comm, *comm1, *comm2;
 char **urls;
 int count =0;
 
@@ -47,7 +48,8 @@ void getUrls(){
 
 int main (void)
 {
-    printf("this works\n");
+    printf("Sessions server.\n");
+    fflush(stdout);
     //  Socket to talk to clients
     void *context = zmq_ctx_new ();
     void *responder = zmq_socket (context, ZMQ_REP);
