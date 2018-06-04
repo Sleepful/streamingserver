@@ -7,7 +7,6 @@
 import java.util.Objects;
 
 import org.zeromq.ZMQ;
-
 public class main {
 
     public static void main(String[] args) {
@@ -17,7 +16,10 @@ public class main {
         System.out.println("Connecting to hello world server…");
 
         ZMQ.Socket requester = context.socket(ZMQ.REQ);
-        requester.connect("tcp://localhost:5555");
+        requester.connect("tcp://206.189.228.117:5555");
+
+     // 
+     // rtsp://206.189.228.117:8554/ [url]
 
         //este es un bloque ejemplo que envia "hello" y recibe "world"
         //importante: cada vez que hace un REQUEST >>tiene<< que hacer un RECEIVE
