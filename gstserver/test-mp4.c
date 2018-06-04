@@ -19,11 +19,13 @@
 
 #include "unused.h"
 
+#include "urlgeneration.h"
+
+#include <stdio.h>
+
 #include <gst/gst.h>
 
 #include <gst/rtsp-server/rtsp-server.h>
-
-#define DEFAULT_RTSP_PORT "8554"
 
 static char *port = (char *) DEFAULT_RTSP_PORT;
 
@@ -109,6 +111,7 @@ media_configure_cb (GstRTSPMediaFactory * factory, GstRTSPMedia * media)
   g_signal_connect (media, "prepared", (GCallback) media_prepared_cb, factory);
 }
 
+
 int
 main (int argc, char *argv[])
 {
@@ -146,23 +149,34 @@ main (int argc, char *argv[])
    * that be used to map uri mount points to media factories */
   mounts = gst_rtsp_server_get_mount_points (server);
 
-  str = g_strdup_printf ("( "
-      "filesrc location=\"%s\" ! qtdemux name=d "
-      "d. ! queue ! rtph264pay pt=96 name=pay0 "
-      "d. ! queue ! rtpmp4apay pt=97 name=pay1 " ")", argv[1]);
+  for (int arg  = 1; arg<argc; ++arg ) { // for each arg
 
-  /* make a media factory for a test stream. The default media factory can use
-   * gst-launch syntax to create pipelines. 
-   * any launch line works as long as it contains elements named pay%d. Each
-   * element with pay%d names will be a stream */
-  factory = gst_rtsp_media_factory_new ();
-  gst_rtsp_media_factory_set_launch (factory, str);
-  g_signal_connect (factory, "media-configure", (GCallback) media_configure_cb,
-      factory);
-  g_free (str);
 
-  /* attach the test factory to the /test url */
-  gst_rtsp_mount_points_add_factory (mounts, "/test", factory);
+    printf("%s\n",argv[arg]);
+    str = g_strdup_printf ("( "
+        "filesrc location=\"%s\" ! qtdemux name=d "
+        "d. ! queue ! rtph264pay pt=96 name=pay0 "
+        "d. ! queue ! rtpmp4apay pt=97 name=pay1 " ")", argv[arg]);
+
+    /* make a media factory for a test stream. The default media factory can use
+     * gst-launch syntax to create pipelines.
+     * any launch line works as long as it contains elements named pay%d. Each
+     * element with pay%d names will be a stream */
+    factory = gst_rtsp_media_factory_new ();
+    gst_rtsp_media_factory_set_launch (factory, str);
+    g_signal_connect (factory, "media-configure", (GCallback) media_configure_cb,
+        factory);
+    g_free (str);
+
+    char url[1024];
+
+    RemoveSpaces(argv[arg]);
+    snprintf(url, sizeof(url), "/%s", argv[arg]);
+    g_print ("stream will be ready at rtsp://127.0.0.1:%s%s\n", port, url);
+
+    /* attach the test factory to the url */
+    gst_rtsp_mount_points_add_factory (mounts, url, factory);
+  }
 
   /* don't need the ref to the mapper anymore */
   g_object_unref (mounts);
@@ -171,7 +185,7 @@ main (int argc, char *argv[])
   gst_rtsp_server_attach (server, NULL);
 
   /* start serving */
-  g_print ("stream ready at rtsp://127.0.0.1:%s/test\n", port);
+  g_print ("streams ready!\n");
   g_main_loop_run (loop);
 
   return 0;
