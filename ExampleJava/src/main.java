@@ -8,6 +8,8 @@ import java.util.Objects;
 
 import org.zeromq.ZMQ;
 public class main {
+	static String remote = "tcp://206.189.228.117:5555";
+	static String local = "tcp://127.0.0.1:5555";
 
     public static void main(String[] args) {
         ZMQ.Context context = ZMQ.context(1);
@@ -16,9 +18,10 @@ public class main {
         System.out.println("Connecting to hello world server…");
 
         ZMQ.Socket requester = context.socket(ZMQ.REQ);
-        requester.connect("tcp://206.189.228.117:5555");
+        requester.connect(remote);
 
-     // 
+     // tcp://127.0.0.1:5555
+     // tcp://206.189.228.117:5555
      // rtsp://206.189.228.117:8554/ [url]
 
         //este es un bloque ejemplo que envia "hello" y recibe "world"
@@ -51,6 +54,20 @@ public class main {
         while(reply== null || !Objects.equals("end:",new String(reply))) {
 	        String request = "urls:"+count;
 	        System.out.println("Sending: urls:"+count);
+	        requester.send(request.getBytes(), 0);
+	        count++;
+	        reply = requester.recv(0);
+	        System.out.println("Received: " + new String(reply));
+        }
+        
+        //se reinician estas cosas para poder hacer loop otra vez
+        reply = null;
+        count=0;
+        
+        //igual que antes pero esta vez con nombres
+        while(reply== null || !Objects.equals("end:",new String(reply))) {
+	        String request = "name:"+count;
+	        System.out.println("Sending: name:"+count);
 	        requester.send(request.getBytes(), 0);
 	        count++;
 	        reply = requester.recv(0);
