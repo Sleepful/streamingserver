@@ -7,6 +7,8 @@
 #include <assert.h>
 #include "zhelpers.h"
 #include "urlgeneration.h"
+#define REMOTE_IP "206.189.228.117"
+#define LOCALHOST "127.0.0.1"
 
 struct comType *comm, *comm1, *comm2;
 char **urls;
@@ -29,7 +31,6 @@ void getUrls(){
       /* Handle error */
       printf("error with fp");
   while (fgets(path, URL_SIZE, fp) != NULL){
-      RemoveSpaces(path);
       //printf("%s", path);
       add_string(urls,&count,path);
       //printf("1 %d\n", count);
@@ -65,7 +66,16 @@ int main (void)
         printf ("Received: %s.\n", string);     //  Show progress
         if(strstr(string, "urls:") != NULL){
           if(string[5]-'0'<count){
-            strcpy(url, urls[string[5]-'0']);
+            sprintf(url,"rtsp://%s:8554/%s", REMOTE_IP, urls[string[5]-'0']);
+            RemoveSpaces(url);
+          }
+          else{
+            strcpy(url,"end:");
+          }
+        }
+        if(strstr(string, "name:") != NULL){
+          if(string[5]-'0'<count){
+            sprintf(url,"%s", urls[string[5]-'0']+6);
           }
           else{
             strcpy(url,"end:");
