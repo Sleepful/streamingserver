@@ -1,5 +1,8 @@
 # streamingserver
 
+Documentación completa en **\Docs\docu.pdf**
+
+---
 
 gstserver\\**urlgeneration.h**: utilizado para generar los URL de los streams, al tener su propio archivo asegura consistencia entre los varios programas que lo usan.
 
