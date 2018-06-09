@@ -1,7 +1,7 @@
 # streamingserver
 
 
-gstserver\*urlgeneration.h*: utilizado para generar los URL de los streams, al tener su propio archivo asegura consistencia entre los varios programas que lo usan.
+gstserver\**urlgeneration.h**: utilizado para generar los URL de los streams, al tener su propio archivo asegura consistencia entre los varios programas que lo usan.
 
 gstserver\*zhelpers.h*: funciones útiles para ser reutilizadas constantemente junto a la biblioteca zeromq.
 
