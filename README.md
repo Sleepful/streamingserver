@@ -1,6 +1,6 @@
 # streamingserver
 
-Servidor de streaming de video en C, con clientes en Java. Puede conectarse a varios clientes al mismo tiempo. Hecho con [zeromq](https://zeromq.org/)
+Servidor de streaming de video en C, con clientes en Java. Puede conectarse a varios clientes al mismo tiempo. Hecho con [zeromq](https://zeromq.org/).
 
 Documentación completa en **\Docs\docu.pdf**
 
